@@ -30,3 +30,5 @@ model Item {
   price Float
   createdAt DateTime @default(now())
 }
+
+// npx prisma db push -> para fazer a sincronização das schemas no local e no atlas
