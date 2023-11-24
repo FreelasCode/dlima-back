@@ -2,5 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var app_1 = require("./app");
 var PORT = process.env.PORT || 8080;
+console.log(process.env["MONGO_DB_USER"]);
+console.log(process.env["MONGO_DB_PASSWORD"]);
+console.log(process.env["DATABASE_URL"]);
+console.log(process.env["SECRET"]);
 new app_1.App().server.listen(PORT);
 console.log("server listening on http://localhost:3000");
