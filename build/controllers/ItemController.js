@@ -115,11 +115,11 @@ var getItem = function (req, res) { return __awaiter(void 0, void 0, void 0, fun
 }); };
 exports.getItem = getItem;
 var listItems = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var order, _a, items, itemsOrderByNewer, itemsOrderByOlder, itemsOrderByNameDesc, itemsOrderByNameAsc, itemsOrderByPriceHighest, itemsOrderByPriceLowest, error_3;
+    var order, _a, items, itemsOrderByNewer, itemsOrderByOlder, itemsOrderByNameDesc, itemsOrderByNameAsc, itemsOrderByPriceHighest, itemsOrderByPriceLowest, allItems, error_3;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                _b.trys.push([0, 17, , 18]);
+                _b.trys.push([0, 19, , 20]);
                 order = req.params.order;
                 return [4 /*yield*/, prisma.$connect()];
             case 1:
@@ -139,7 +139,7 @@ var listItems = function (req, res) { return __awaiter(void 0, void 0, void 0, f
             case 3:
                 items = _b.sent();
                 res.send(items);
-                return [3 /*break*/, 16];
+                return [3 /*break*/, 18];
             case 4: return [4 /*yield*/, prisma.item.findMany({
                     orderBy: {
                         price: "desc"
@@ -148,7 +148,7 @@ var listItems = function (req, res) { return __awaiter(void 0, void 0, void 0, f
             case 5:
                 itemsOrderByNewer = _b.sent();
                 res.send(itemsOrderByNewer);
-                return [3 /*break*/, 16];
+                return [3 /*break*/, 18];
             case 6: return [4 /*yield*/, prisma.item.findMany({
                     orderBy: {
                         price: "desc"
@@ -157,7 +157,7 @@ var listItems = function (req, res) { return __awaiter(void 0, void 0, void 0, f
             case 7:
                 itemsOrderByOlder = _b.sent();
                 res.send(itemsOrderByOlder);
-                return [3 /*break*/, 16];
+                return [3 /*break*/, 18];
             case 8: return [4 /*yield*/, prisma.item.findMany({
                     orderBy: {
                         name: "desc"
@@ -166,7 +166,7 @@ var listItems = function (req, res) { return __awaiter(void 0, void 0, void 0, f
             case 9:
                 itemsOrderByNameDesc = _b.sent();
                 res.send(itemsOrderByNameDesc);
-                return [3 /*break*/, 16];
+                return [3 /*break*/, 18];
             case 10: return [4 /*yield*/, prisma.item.findMany({
                     orderBy: {
                         name: "asc"
@@ -175,7 +175,7 @@ var listItems = function (req, res) { return __awaiter(void 0, void 0, void 0, f
             case 11:
                 itemsOrderByNameAsc = _b.sent();
                 res.send(itemsOrderByNameAsc);
-                return [3 /*break*/, 16];
+                return [3 /*break*/, 18];
             case 12: return [4 /*yield*/, prisma.item.findMany({
                     orderBy: {
                         price: "desc"
@@ -184,7 +184,7 @@ var listItems = function (req, res) { return __awaiter(void 0, void 0, void 0, f
             case 13:
                 itemsOrderByPriceHighest = _b.sent();
                 res.send(itemsOrderByPriceHighest);
-                return [3 /*break*/, 16];
+                return [3 /*break*/, 18];
             case 14: return [4 /*yield*/, prisma.item.findMany({
                     orderBy: {
                         price: "asc"
@@ -193,13 +193,18 @@ var listItems = function (req, res) { return __awaiter(void 0, void 0, void 0, f
             case 15:
                 itemsOrderByPriceLowest = _b.sent();
                 res.send(itemsOrderByPriceLowest);
-                return [3 /*break*/, 16];
-            case 16: return [3 /*break*/, 18];
+                return [3 /*break*/, 18];
+            case 16: return [4 /*yield*/, prisma.item.findMany()];
             case 17:
+                allItems = _b.sent();
+                res.send(allItems);
+                return [3 /*break*/, 18];
+            case 18: return [3 /*break*/, 20];
+            case 19:
                 error_3 = _b.sent();
                 res.send(error_3);
-                return [3 /*break*/, 18];
-            case 18: return [2 /*return*/];
+                return [3 /*break*/, 20];
+            case 20: return [2 /*return*/];
         }
     });
 }); };
@@ -310,7 +315,7 @@ var getImage = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
         try {
             image = req.params.image;
             console.log(image);
-            filePath = path_1.default.join(__dirname, '..', 'public', 'images');
+            filePath = path_1.default.join(__dirname, '..', '..', 'public', 'images');
             res.sendFile(image, { root: filePath });
         }
         catch (error) {

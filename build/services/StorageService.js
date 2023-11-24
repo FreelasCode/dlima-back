@@ -7,7 +7,7 @@ exports.upload = void 0;
 var multer_1 = __importDefault(require("multer"));
 var path_1 = __importDefault(require("path"));
 var storage = multer_1.default.diskStorage({
-    destination: 'src/public/images',
+    destination: './public/images',
     filename: function (req, file, cb) {
         var ext = path_1.default.extname(file.originalname);
         var uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);

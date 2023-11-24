@@ -186,8 +186,7 @@ export const getImage = async (req: Request, res: Response) => {
     try {
         const { image } = req.params;
         console.log(image)
-
-        const filePath = path.join(__dirname, '..', 'public', 'images')
+        const filePath = path.join(__dirname, '..','..', 'public', 'images')
 
         res.sendFile(image, { root: filePath })
     } catch (error) {
