@@ -1,22 +1,25 @@
 import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
+import * as ResponseHelper from '../helpers/ResponseHelper';
 import path from 'path';
 
 const prisma = new PrismaClient()
 
 export const createItem = async (req: Request, res: Response) => {
-    const { name, amount, code, price  } = req.body;
-    // npx prisma generate
+    const { name, category, color, amount, weight, dimension, price, description} = req.body;
     try {
         if(!req.file) { 
-            // TODO: fazer o tratamento de erro 
             res.send("File not found")
         } else {
             const item = await prisma.item.create({
                 data: {
                     name,
                     image: `/images/${req.file.filename}`,
-                    code,
+                    category, 
+                    color, 
+                    weight: parseFloat(weight),
+                    dimension, 
+                    description,
                     amount: parseInt(amount),
                     price: parseFloat(price)
                 }
@@ -47,21 +50,92 @@ export const getItem = async (req: Request, res: Response) => {
     }
 };
 
-
 export const listItems = async (req: Request, res: Response) => {
     try {
+        const { order } = req.params;
         await prisma.$connect()
-        const items = await prisma.item.findMany()
-        res.send(items)
+        switch (parseInt(order)) {
+            case 99:
+                const items = await prisma.item.findMany()
+                res.send(items)
+                break;
+            case 0:
+                const itemsOrderByNewer = await prisma.item.findMany({
+                    orderBy: {
+                        price: "desc"
+                    }
+                })
+                res.send(itemsOrderByNewer)
+                break;
+            case 1:
+                const itemsOrderByOlder = await prisma.item.findMany({
+                    orderBy: {
+                        price: "desc"
+                    }
+                })
+                res.send(itemsOrderByOlder)
+                break;
+            
+            case 2: 
+                const itemsOrderByNameDesc = await prisma.item.findMany({
+                    orderBy: {
+                        name: "desc"
+                    }
+                })
+                res.send(itemsOrderByNameDesc)
+                break;
+            case 3:
+                const itemsOrderByNameAsc = await prisma.item.findMany({
+                    orderBy: {
+                        name: "asc"
+                    }
+                })
+                res.send(itemsOrderByNameAsc)
+                break;
+            case 4:
+                const itemsOrderByPriceHighest = await prisma.item.findMany({
+                    orderBy: {
+                        price: "desc"
+                    }
+                })
+                res.send(itemsOrderByPriceHighest)
+                break;
+            case 5:
+                const itemsOrderByPriceLowest = await prisma.item.findMany({
+                    orderBy: {
+                        price: "asc"
+                    }
+                })
+                res.send(itemsOrderByPriceLowest)
+                break;
+        }   
     } catch (error) {
         res.send(error)
     }
 };
 
+export const listItemsByName = async (req: Request, res: Response) => {
+    try {
+        const { name } = req.params;
+        await prisma.$connect()
+        const items = await prisma.item.findMany({
+            where: {
+                name: {
+                    contains: name
+                }
+            }
+        })
+        res.send(items)
+    } catch (error) {
+        res.send(error)
+    }
+
+}
+
 export const editItem = async (req: Request, res: Response) => {
     try {
         const { item_id } = req.body;
-        const { name, amount, code, price  } = req.body;
+        const { name, amount, price  } = req.body;
 
         await prisma.$connect()
         
@@ -74,7 +148,6 @@ export const editItem = async (req: Request, res: Response) => {
                 },
                 data: {
                     name,
-                    code,
                     amount: parseInt(amount),
                     price: parseFloat(price)
                 }

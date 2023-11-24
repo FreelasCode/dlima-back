@@ -10,7 +10,7 @@ const prisma = new PrismaClient()
 const router: Router = Router()
 
 router.post("/admin/user/create", async (req, res) => {
-
+    console.log("teste")
     const { email, name, username, password } = req.body;
     try {
         await prisma.user.create({
@@ -29,12 +29,14 @@ router.post("/admin/user/create", async (req, res) => {
 
 })
 
-router.get("/user/login", UserController.login)
+router.post("/user/login", UserController.login)
 
 // Item routes 
 router.post("/admin/item/create", upload.single('image'), ItemController.createItem)
 
-router.get("/item/list", authorize, ItemController.listItems)
+router.get("/item/list/:order", ItemController.listItems)
+
+router.get("/item/list/name/:name", ItemController.listItemsByName)
 
 router.get("/images/:image", ItemController.getImage)
 
@@ -43,7 +45,6 @@ router.get("/item/:id", ItemController.getItem)
 router.post("/admin/item/edit", upload.single('image'), ItemController.editItem)
 
 router.post("/admin/item/delete", ItemController.deleteItem)
-
 
 export { router };
 

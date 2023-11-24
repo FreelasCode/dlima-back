@@ -23,11 +23,13 @@ model Item {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   image String
   name String
-  amount Int
-  code String @unique
-  description String?
   category String?
+  color String?
+  amount Int?
+  weight Float?
+  dimension String?
   price Float
+  description String?
   createdAt DateTime @default(now())
 }
 

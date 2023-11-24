@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  mongodb:
+    image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: gibamedeirosgc
+      MONGO_INITDB_ROOT_PASSWORD: YRKM5vRzKzRx71Cq
+    volumes:
+      - mongodb_data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - mongodb-network
+
+networks:
+  mongodb-network:
+
+volumes:
+  mongodb_data:
