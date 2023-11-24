@@ -108,6 +108,10 @@ export const listItems = async (req: Request, res: Response) => {
                 })
                 res.send(itemsOrderByPriceLowest)
                 break;
+            default:
+                const allItems = await prisma.item.findMany()
+                res.send(allItems)
+                break;
         }   
     } catch (error) {
         res.send(error)
