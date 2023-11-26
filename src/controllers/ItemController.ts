@@ -7,7 +7,6 @@ import cloudinary from '../services/CloudinaryConfig';
 
 export const createItem = async (req: Request, res: Response) => {
     const { name, category, color, amount, weight, dimension, price, description} = req.body;
-    console.log(req.file?.path)   
     try {
         if(!req.file) { 
             res.send("File not found")
@@ -193,5 +192,25 @@ export const getImage = async (req: Request, res: Response) => {
         res.sendFile(image, { root: filePath })
     } catch (error) {
         res.send(error)
+    }
+}
+
+export const changeQuantity = async(req: Request, res: Response) => {
+    try {
+        console.log("teste")
+        const { item_id, quantity } = req.body;
+        console.log(item_id, quantity)
+        await prisma.$connect()
+        const item = await prisma.item.update({
+            where: { id: item_id },
+            data: { amount: quantity },
+          })
+        if( item ) {
+            res.send(item)
+        } else {
+            res.send("Item not found")
+        }
+    } catch (error) {
+        
     }
 }
