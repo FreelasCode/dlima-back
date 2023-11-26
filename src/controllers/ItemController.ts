@@ -2,19 +2,21 @@ import { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import * as ResponseHelper from '../helpers/ResponseHelper';
 import path from 'path';
-
 const prisma = new PrismaClient()
+import cloudinary from '../services/CloudinaryConfig';
 
 export const createItem = async (req: Request, res: Response) => {
     const { name, category, color, amount, weight, dimension, price, description} = req.body;
+    console.log(req.file?.path)   
     try {
         if(!req.file) { 
             res.send("File not found")
         } else {
+            const image = await cloudinary.uploader.upload(req.file?.path)
             const item = await prisma.item.create({
                 data: {
                     name,
-                    image: `/images/${req.file.filename}`,
+                    image: image.url,
                     category, 
                     color, 
                     weight: parseFloat(weight),
