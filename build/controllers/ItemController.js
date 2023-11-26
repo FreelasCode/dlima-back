@@ -43,42 +43,48 @@ exports.getImage = exports.deleteItem = exports.editItem = exports.listItemsByNa
 var client_1 = require("@prisma/client");
 var path_1 = __importDefault(require("path"));
 var prisma = new client_1.PrismaClient();
+var CloudinaryConfig_1 = __importDefault(require("../services/CloudinaryConfig"));
 var createItem = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, name, category, color, amount, weight, dimension, price, description, item, error_1;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var _a, name, category, color, amount, weight, dimension, price, description, image, item, error_1;
+    var _b, _c;
+    return __generator(this, function (_d) {
+        switch (_d.label) {
             case 0:
                 _a = req.body, name = _a.name, category = _a.category, color = _a.color, amount = _a.amount, weight = _a.weight, dimension = _a.dimension, price = _a.price, description = _a.description;
-                _b.label = 1;
+                console.log((_b = req.file) === null || _b === void 0 ? void 0 : _b.path);
+                _d.label = 1;
             case 1:
-                _b.trys.push([1, 5, , 6]);
+                _d.trys.push([1, 6, , 7]);
                 if (!!req.file) return [3 /*break*/, 2];
                 res.send("File not found");
-                return [3 /*break*/, 4];
-            case 2: return [4 /*yield*/, prisma.item.create({
-                    data: {
-                        name: name,
-                        image: "/images/".concat(req.file.filename),
-                        category: category,
-                        color: color,
-                        weight: parseFloat(weight),
-                        dimension: dimension,
-                        description: description,
-                        amount: parseInt(amount),
-                        price: parseFloat(price)
-                    }
-                })];
+                return [3 /*break*/, 5];
+            case 2: return [4 /*yield*/, CloudinaryConfig_1.default.uploader.upload((_c = req.file) === null || _c === void 0 ? void 0 : _c.path)];
             case 3:
-                item = _b.sent();
+                image = _d.sent();
+                return [4 /*yield*/, prisma.item.create({
+                        data: {
+                            name: name,
+                            image: image.url,
+                            category: category,
+                            color: color,
+                            weight: parseFloat(weight),
+                            dimension: dimension,
+                            description: description,
+                            amount: parseInt(amount),
+                            price: parseFloat(price)
+                        }
+                    })];
+            case 4:
+                item = _d.sent();
                 res.send(item);
-                _b.label = 4;
-            case 4: return [3 /*break*/, 6];
-            case 5:
-                error_1 = _b.sent();
+                _d.label = 5;
+            case 5: return [3 /*break*/, 7];
+            case 6:
+                error_1 = _d.sent();
                 console.log(error_1);
                 res.send("Error creating item");
-                return [3 /*break*/, 6];
-            case 6: return [2 /*return*/];
+                return [3 /*break*/, 7];
+            case 7: return [2 /*return*/];
         }
     });
 }); };
