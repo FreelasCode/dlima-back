@@ -4,6 +4,7 @@ import * as ResponseHelper from '../helpers/ResponseHelper';
 import path from 'path';
 const prisma = new PrismaClient()
 import cloudinary from '../services/CloudinaryConfig';
+import { Console } from 'console';
 
 export const createItem = async (req: Request, res: Response) => {
     const { name, category, color, amount, weight, dimension, price, description} = req.body;
@@ -139,30 +140,33 @@ export const listItemsByName = async (req: Request, res: Response) => {
 
 export const editItem = async (req: Request, res: Response) => {
     try {
-        const { item_id } = req.body;
-        const { name, amount, price  } = req.body;
+        const { id } = req.params; // pegar o item pelo parâmetro 
+        const { name, category, color, amount, weight, dimension, price, description} = req.body;
 
-        await prisma.$connect()
-        
-        const item = await prisma.item.findUnique(item_id)
-
-        if(item) {
+        if(!req.file) { 
+            res.send("File not found")
+        } else {
+            const image = await cloudinary.uploader.upload(req.file?.path)
+            await prisma.$connect()
             const updatedItem = await prisma.item.update({
-                where: {
-                    id: item.id
-                },
-                data: {
+                where: { id },
+                data: { 
                     name,
+                    image: image.url,
+                    category,
+                    color,
                     amount: parseInt(amount),
-                    price: parseFloat(price)
-                }
+                    weight: parseFloat(weight),
+                    dimension,
+                    price: parseFloat(price),
+                    description
+                },
             })
             res.send(updatedItem)
-        } else {
-            res.send("Item not found")
         }
-        
+
     } catch (error) {
+        console.log(error)
         res.send(error)
     }
 }; 

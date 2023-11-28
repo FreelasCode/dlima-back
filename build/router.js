@@ -106,5 +106,6 @@ router.get("/item/list/:order", ItemController.listItems);
 router.get("/item/list/name/:name", ItemController.listItemsByName);
 router.get("/images/:image", ItemController.getImage);
 router.get("/item/:id", ItemController.getItem);
-router.post("/admin/item/edit", StorageService_1.upload.single('image'), ItemController.editItem);
+router.post("/admin/item/edit/:id", StorageService_1.upload.single('image'), ItemController.editItem);
 router.post("/admin/item/delete", ItemController.deleteItem);
+router.post("/item/update/quantity", ItemController.changeQuantity);

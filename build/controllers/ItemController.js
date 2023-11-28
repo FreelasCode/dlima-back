@@ -39,28 +39,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getImage = exports.deleteItem = exports.editItem = exports.listItemsByName = exports.listItems = exports.getItem = exports.createItem = void 0;
+exports.changeQuantity = exports.getImage = exports.deleteItem = exports.editItem = exports.listItemsByName = exports.listItems = exports.getItem = exports.createItem = void 0;
 var client_1 = require("@prisma/client");
 var path_1 = __importDefault(require("path"));
 var prisma = new client_1.PrismaClient();
 var CloudinaryConfig_1 = __importDefault(require("../services/CloudinaryConfig"));
 var createItem = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, name, category, color, amount, weight, dimension, price, description, image, item, error_1;
-    var _b, _c;
-    return __generator(this, function (_d) {
-        switch (_d.label) {
+    var _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
             case 0:
                 _a = req.body, name = _a.name, category = _a.category, color = _a.color, amount = _a.amount, weight = _a.weight, dimension = _a.dimension, price = _a.price, description = _a.description;
-                console.log((_b = req.file) === null || _b === void 0 ? void 0 : _b.path);
-                _d.label = 1;
+                _c.label = 1;
             case 1:
-                _d.trys.push([1, 6, , 7]);
+                _c.trys.push([1, 6, , 7]);
                 if (!!req.file) return [3 /*break*/, 2];
                 res.send("File not found");
                 return [3 /*break*/, 5];
-            case 2: return [4 /*yield*/, CloudinaryConfig_1.default.uploader.upload((_c = req.file) === null || _c === void 0 ? void 0 : _c.path)];
+            case 2: return [4 /*yield*/, CloudinaryConfig_1.default.uploader.upload((_b = req.file) === null || _b === void 0 ? void 0 : _b.path)];
             case 3:
-                image = _d.sent();
+                image = _c.sent();
                 return [4 /*yield*/, prisma.item.create({
                         data: {
                             name: name,
@@ -75,12 +74,12 @@ var createItem = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                         }
                     })];
             case 4:
-                item = _d.sent();
+                item = _c.sent();
                 res.send(item);
-                _d.label = 5;
+                _c.label = 5;
             case 5: return [3 /*break*/, 7];
             case 6:
-                error_1 = _d.sent();
+                error_1 = _c.sent();
                 console.log(error_1);
                 res.send("Error creating item");
                 return [3 /*break*/, 7];
@@ -246,40 +245,45 @@ var listItemsByName = function (req, res) { return __awaiter(void 0, void 0, voi
 }); };
 exports.listItemsByName = listItemsByName;
 var editItem = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var item_id, _a, name, amount, price, item, updatedItem, error_5;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var id, _a, name, category, color, amount, weight, dimension, price, description, image, updatedItem, error_5;
+    var _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
             case 0:
-                _b.trys.push([0, 6, , 7]);
-                item_id = req.body.item_id;
-                _a = req.body, name = _a.name, amount = _a.amount, price = _a.price;
-                return [4 /*yield*/, prisma.$connect()];
-            case 1:
-                _b.sent();
-                return [4 /*yield*/, prisma.item.findUnique(item_id)];
+                _c.trys.push([0, 6, , 7]);
+                id = req.params.id;
+                _a = req.body, name = _a.name, category = _a.category, color = _a.color, amount = _a.amount, weight = _a.weight, dimension = _a.dimension, price = _a.price, description = _a.description;
+                if (!!req.file) return [3 /*break*/, 1];
+                res.send("File not found");
+                return [3 /*break*/, 5];
+            case 1: return [4 /*yield*/, CloudinaryConfig_1.default.uploader.upload((_b = req.file) === null || _b === void 0 ? void 0 : _b.path)];
             case 2:
-                item = _b.sent();
-                if (!item) return [3 /*break*/, 4];
+                image = _c.sent();
+                return [4 /*yield*/, prisma.$connect()];
+            case 3:
+                _c.sent();
                 return [4 /*yield*/, prisma.item.update({
-                        where: {
-                            id: item.id
-                        },
+                        where: { id: id },
                         data: {
                             name: name,
+                            image: image.url,
+                            category: category,
+                            color: color,
                             amount: parseInt(amount),
-                            price: parseFloat(price)
-                        }
+                            weight: parseFloat(weight),
+                            dimension: dimension,
+                            price: parseFloat(price),
+                            description: description
+                        },
                     })];
-            case 3:
-                updatedItem = _b.sent();
-                res.send(updatedItem);
-                return [3 /*break*/, 5];
             case 4:
-                res.send("Item not found");
-                _b.label = 5;
+                updatedItem = _c.sent();
+                res.send(updatedItem);
+                _c.label = 5;
             case 5: return [3 /*break*/, 7];
             case 6:
-                error_5 = _b.sent();
+                error_5 = _c.sent();
+                console.log(error_5);
                 res.send(error_5);
                 return [3 /*break*/, 7];
             case 7: return [2 /*return*/];
@@ -331,3 +335,36 @@ var getImage = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 exports.getImage = getImage;
+var changeQuantity = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, item_id, quantity, item, error_7;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _b.trys.push([0, 3, , 4]);
+                console.log("teste");
+                _a = req.body, item_id = _a.item_id, quantity = _a.quantity;
+                console.log(item_id, quantity);
+                return [4 /*yield*/, prisma.$connect()];
+            case 1:
+                _b.sent();
+                return [4 /*yield*/, prisma.item.update({
+                        where: { id: item_id },
+                        data: { amount: quantity },
+                    })];
+            case 2:
+                item = _b.sent();
+                if (item) {
+                    res.send(item);
+                }
+                else {
+                    res.send("Item not found");
+                }
+                return [3 /*break*/, 4];
+            case 3:
+                error_7 = _b.sent();
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/];
+        }
+    });
+}); };
+exports.changeQuantity = changeQuantity;
